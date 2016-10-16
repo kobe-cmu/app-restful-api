@@ -1,0 +1,67 @@
+var mongoose     = require('mongoose');
+var Schema       = mongoose.Schema;
+
+var RideSchema   = new Schema({
+    passenger: {
+        type: String,
+        refer: 'Passenger',
+        required: true
+    },
+    driver: {
+        type: String,
+        refer: 'Driver',
+        required: true
+    },
+    car: {
+        type: String,
+        refer: 'Car',
+        required: true
+    },
+    rideType: {
+        type: String,
+        required: true,
+        validate: [{
+            validator: function (val) {
+                return val === 'ECONOMY' || val === 'PREMIUM' || val === 'EXECUTIVE';
+            },
+            msg: 'only ECONOMY / PREMIUM / EXECUTIVE available',
+            type: 'notvalid'
+        }]
+    },
+    startPoint: {
+        type: Schema.Types.Mixed,
+        required: true
+    },
+    endPoint: {
+        type: Schema.Types.Mixed,
+        required: true
+    },
+    requestTime: {
+        type: Number,
+        required: true
+    },
+    pickupTime: {
+        type: Number,
+        required: true
+    },
+    dropOffTime: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        validate: [{
+            validator: function (val) {
+                const validVal = ['REQUESTED', 'AWAITING_DRIVER', 'DRIVE_ASSIGNED', 'IN_PROGRESS', 'ARRIVED', 'CLOSED'];
+                return validVal.indexOf(val) >= 0;
+            },
+            msg: 'invaild ride status, you can only choose REQUESTED, AWAITING_DRIVER, DRIVE_ASSIGNED, IN_PROGRESS, ARRIVED, CLOSED',
+            type: 'notvalid'
+        }]
+    },
+    fare: Number,
+    route: [{lat: Number, long: Number}]
+});
+
+module.exports = RideSchema;
